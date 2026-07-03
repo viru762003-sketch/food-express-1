@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Express | Premium Delivery</title>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --bg-color: #0d0d0d;
+            --card-bg: #1a1a1a;
+            --primary-color: #ff4757; /* Vibrant Food Red/Orange */
+            --text-main: #f1f2f6;
+            --text-muted: #a4b0be;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* --- NAVBAR --- */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(13, 13, 13, 0.9);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            z-index: 1000;
+            border-bottom: 1px solid #333;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .logo span {
+            color: var(--text-main);
+        }
+
+        .location {
+            font-size: 1rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #222;
+            padding: 8px 15px;
+            border-radius: 20px;
+        }
+        
+        .location i { color: var(--primary-color); }
+
+        /* USER LOGIN */
+        .user-login {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .user-login:hover { color: var(--primary-color); }
+        .user-login i { font-size: 1.5rem; }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            margin-top: 80px;
+            padding: 60px 5%;
+            text-align: center;
+            border-radius: 0 0 30px 30px;
+            position: relative;
+            overflow: hidden;
+            min-height: 350px;
+        }
+
+        /* --- LOCAL VIDEO BACKGROUND STYLES --- */
+        .hero-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+            background-color: #111;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: -1;
+        }
+
+        .hero h1, .hero p, .search-bar {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+        .hero h1 span { color: var(--primary-color); }
+        .hero p { font-size: 1.2rem; color: #ddd; margin-bottom: 20px; }
+
+        /* SEARCH BAR WITH MIC */
+        .search-bar {
+            margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 15px 20px;
+            padding-right: 80px;
+            border-radius: 30px;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: 0.3s;
+        }
+
+        .search-bar input::placeholder { color: #ccc; }
+        .search-bar input:focus { border-color: var(--primary-color); background: rgba(255, 255, 255, 0.25); }
+        
+        .search-bar .fa-search {
+            position: absolute;
+            right: 20px;
+            color: #fff;
+            font-size: 1.2rem;
+            pointer-events: none;
+        }
+
+        .search-bar .fa-microphone {
+            position: absolute;
+            right: 50px;
+            color: #fff;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .search-bar .fa-microphone:hover {
+            color: var(--primary-color);
+            transform: scale(1.1);
+        }
+
+        /* --- MENU SECTION --- */
+        .menu-container {
+            padding: 50px 5%;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            border-left: 5px solid var(--primary-color);
+            padding-left: 10px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        /* --- FOOD CARDS --- */
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(255, 71, 87, 0.2);
+        }
+
+        .shop-tag {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #f1c40f;
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            z-index: 10;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(241, 196, 15, 0.3);
+        }
+
+        .card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card-content { padding: 20px; }
+        
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .card-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            height: 40px;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .price {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+
+        .add-btn {
+            background: #2ed573;
+            color: #111;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .add-btn:hover { background: #27ae60; color: #fff; }
+
+        /* FLOATING CART BUTTON */
+        .floating-cart {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #2ed573;
+            color: #111;
+            padding: 15px 25px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(46, 213, 115, 0.4);
+            z-index: 999;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            transition: 0.3s;
+        }
+        
+        .floating-cart:hover { transform: scale(1.05); }
+
+        /* --- CART SIDEBAR --- */
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 350px;
+            height: 100vh;
+            background: #111;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.5);
+            z-index: 1001;
+            padding: 20px;
+            transition: 0.4s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid #333;
+        }
+
+        .cart-sidebar.open { right: 0; }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .close-cart { font-size: 1.5rem; cursor: pointer; color: var(--text-muted); }
+        .close-cart:hover { color: var(--primary-color); }
+
+        .cart-items-container {
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #222;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .cart-item-title { font-size: 0.9rem; font-weight: 600; }
+        .cart-item-price { color: var(--primary-color); font-weight: bold; }
+        
+        .remove-btn {
+            background: transparent;
+            color: #ff4757;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .cart-footer {
+            border-top: 1px solid #333;
+            padding-top: 15px;
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            background: #2ed573;
+            color: #111;
+            border: none;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .checkout-btn:hover { background: #27ae60; color: #fff; }
+
+        /* --- LOGIN & REGISTER MODALS --- */
+        .login-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            width: 90%;
+            max-width: 400px;
+            background: #111;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            z-index: 1002;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.3s ease-in-out;
+            border: 1px solid #333;
+        }
+
+        .login-modal.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .login-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+        }
+
+        .login-header h2 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            background: #222;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .input-group input:focus { border-color: var(--primary-color); }
+
+        .login-actions {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+
+        .forgot-pass {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+
+        .forgot-pass:hover { color: var(--primary-color); }
+
+        .login-submit-btn {
+            width: 100%;
+            background: var(--primary-color);
+            color: #fff;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .login-submit-btn:hover { background: #ff2a3f; }
+
+        .create-account {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .create-account a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .create-account a:hover { text-decoration: underline; }
+
+        /* --- OVERLAY --- */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(3px);
+            z-index: 1000;
+            display: none;
+        }
+        .overlay.active { display: block; }
+
+        /* --- FOOTER --- */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            background: #050505;
+            margin-top: 50px;
+            border-top: 1px solid #222;
+        }
+
+        .creator-highlight {
+            background: linear-gradient(90deg, #ff4757, #ff6b81);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <header>
+        <div class="logo">Food<span>Express</span></div>
+        <div class="location">
+            <i class="fas fa-map-marker-alt"></i> Morbi, Gujarat
+        </div>
+        <!-- CART ICON REPLACED BY LOGIN POPUP TRIGGER WITH DYNAMIC NAME -->
+        <div class="user-login" onclick="handleUserIconClick()">
+            <i class="fas fa-user-circle"></i> <span id="header-user-name">Login</span>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <video autoplay loop muted playsinline class="hero-video" poster="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=2070&auto=format&fit=crop">
+            <source src="bg.mp4" type="video/mp4">
+        </video>
+        <div class="hero-overlay"></div>
+
+        <h1>Craving Something <span>Delicious?</span></h1>
+        <p>Order the best Pizzas, Burgers, and Waffles directly to your doorstep in Morbi.</p>
+        
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search for Waffles, Pizzas, Burgers..." onkeyup="searchFood()">
+            <i class="fas fa-microphone" onclick="startVoiceSearch()" title="Voice Search"></i>
+            <i class="fas fa-search"></i>
+        </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section class="menu-container">
+        <h2 class="section-title">Brother Waffle & Snacks <span style="font-size: 1.2rem; color: var(--text-muted); font-weight: 400;">& More...</span></h2>
+        
+        <div class="grid" id="menu-grid">
+            <!-- Items will be injected here via JavaScript -->
+        </div>
+    </section>
+
+    <!-- FLOATING CART BUTTON -->
+    <div class="floating-cart" id="floating-cart" onclick="openCartSidebar()">
+        <i class="fas fa-shopping-cart"></i> View Cart <span id="floating-count">(0)</span>
+    </div>
+
+    <!-- MAIN OVERLAY -->
+    <div class="overlay" id="overlay" onclick="closeAllModals()"></div>
+
+    <!-- LOGIN MODAL -->
+    <div class="login-modal" id="login-modal">
+        <div class="login-header">
+            <h2>User Login</h2>
+            <i class="fas fa-times close-login" onclick="closeAllModals()" style="cursor: pointer; color: var(--text-muted);"></i>
+        </div>
+        <div class="login-body">
+            <div class="input-group">
+                <i class="fas fa-mobile-alt"></i>
+                <input type="text" id="login-mobile" placeholder="User ID or Mobile Number">
+            </div>
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="login-pass" placeholder="Password">
+            </div>
+            <div class="login-actions">
+                <a href="#" class="forgot-pass" onclick="alert('Redirecting to password recovery...')">Forgot Password?</a>
+            </div>
+            <!-- LOGIN BUTTON LOGIC UPDATED -->
+            <button class="login-submit-btn" onclick="loginUser()">Login</button>
+            <div class="create-account">
+                <p>Don't have an account? <br><br> <a onclick="openRegisterModal()">Create a new user account</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- REGISTER MODAL -->
+    <div class="login-modal" id="register-modal">
+        <div class="login-header">
+            <h2>Create Account</h2>
+            <i class="fas fa-times close-login" onclick="closeAllModals()" style="cursor: pointer; color: var(--text-muted);"></i>
+        </div>
+        <div class="login-body">
+            <div class="input-group">
+                <i class="fas fa-user"></i>
+                <input type="text" id="reg-name" placeholder="Full Name">
+            </div>
+            <div class="input-group">
+                <i class="fas fa-mobile-alt"></i>
+                <input type="text" id="reg-mobile" placeholder="Mobile Number or Email">
+            </div>
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="reg-pass" placeholder="Create Password">
+            </div>
+            <!-- SIGN UP BUTTON LOGIC UPDATED -->
+            <button class="login-submit-btn" onclick="registerUser()">Sign Up</button>
+            <div class="create-account">
+                <p>Already have an account? <br><br> <a onclick="openLoginModal()">Login here</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h2>Your Cart</h2>
+            <i class="fas fa-times close-cart" onclick="closeAllModals()"></i>
+        </div>
+        
+        <div class="cart-items-container" id="cart-items-container"></div>
+
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cart-total-price">₹0</span>
+            </div>
+            <button class="checkout-btn" onclick="placeOrder()">Place Order Now</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p style="color: var(--text-muted); margin-bottom: 10px;">Designed & Developed by</p>
+        <div>
+            <span class="creator-highlight">Raj Shah</span> 
+            <span style="color: #fff; margin: 0 10px;">&</span> 
+            <span class="creator-highlight">Hardik Vamja</span>
+        </div>
+    </footer>
+
+    <!-- --- JAVASCRIPT FOR FUNCTIONALITY --- -->
+    <script>
+        // Food Database
+        const menuItems = [
+            { id: 3, name: "Triple Choco Waffle", desc: "Loaded with dark, milk, and white chocolate.", price: 150, shop: "Brother Waffle & Snacks", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRPW1qdxpXDN6Bi8vbiDH_5_eevXJcgfQCMvM9qBxJhA&s=10" }, 
+            { id: 6, name: "Nutella Chocolate Bowl", desc: "Warm brownie topped with rich Nutella.", price: 179, shop: "Brother Waffle & Snacks", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTRFinxm8LDlxA-xYaKk9yk8V_GxaOJXcrF6lRAAFTDqQ&s=10" },
+            { id: 4, name: "Cheese Burst Maggi", desc: "Street style maggi loaded with extra cheese.", price: 70, shop: "Brother Waffle & Snacks", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR-UpaYVjNPWpb8KuqnyrFFY4ZGgvz9VHKc61nc5BmVfw&s=10" }, 
+            { id: 5, name: "Peri Peri Fries", desc: "Crispy french fries tossed in spicy peri peri.", price: 80, shop: "Brother Waffle & Snacks", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTeQKx_eN31B4BR_gWQEL41xcKfeKbPU1ootv4dPeYQEg&s=10" }, 
+            { id: 1, name: "Margherita Pizza", desc: "Classic cheese pizza with fresh basil.", price: 149, shop: "Food Express", img: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=500&auto=format&fit=crop" },
+            { id: 2, name: "Maharaja Burger", desc: "Double patty veg burger with melting cheese.", price: 99, shop: "Food Express", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&auto=format&fit=crop" }
+        ];
+
+        let cart = [];
+
+        // --- NEW USER AUTHENTICATION LOGIC (WITH LOCAL STORAGE) ---
+        let registeredUser = JSON.parse(localStorage.getItem('registeredUser')) || { name: "", mobile: "", password: "" };
+        let isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+
+        // Check login state on page reload
+        function checkLoginState() {
+            if (isLoggedIn && registeredUser.name) {
+                document.getElementById('header-user-name').innerText = registeredUser.name;
+            }
+        }
+
+        // Handle clicking the top right Login/Name icon
+        function handleUserIconClick() {
+            if (isLoggedIn) {
+                if(confirm("Hello, " + registeredUser.name + "! Do you want to log out?")) {
+                    isLoggedIn = false;
+                    localStorage.setItem('isLoggedIn', 'false');
+                    document.getElementById('header-user-name').innerText = 'Login';
+                }
+            } else {
+                openLoginModal();
+            }
+        }
+
+        // Register Account Function
+        function registerUser() {
+            const nameField = document.getElementById('reg-name');
+            const mobileField = document.getElementById('reg-mobile');
+            const passField = document.getElementById('reg-pass');
+
+            if (!nameField.value || !mobileField.value || !passField.value) {
+                alert("Please fill all details to create an account!");
+                return;
+            }
+
+            // Save user details to variable and LocalStorage
+            registeredUser.name = nameField.value;
+            registeredUser.mobile = mobileField.value;
+            registeredUser.password = passField.value;
+            
+            localStorage.setItem('registeredUser', JSON.stringify(registeredUser));
+
+            alert("Account created successfully for " + registeredUser.name + "! You can now log in.");
+            
+            // Clear input fields
+            nameField.value = '';
+            mobileField.value = '';
+            passField.value = '';
+
+            openLoginModal(); // Redirect to login
+        }
+
+        // Login Function
+        function loginUser() {
+            const mobileField = document.getElementById('login-mobile');
+            const passField = document.getElementById('login-pass');
+
+            if (!mobileField.value || !passField.value) {
+                alert("Please enter User ID and Password.");
+                return;
+            }
+
+            // Check if entered credentials match registered ones in LocalStorage
+            if (registeredUser.mobile === mobileField.value && registeredUser.password === passField.value) {
+                isLoggedIn = true;
+                localStorage.setItem('isLoggedIn', 'true'); // Save login state
+                
+                // Change "Login" text to User's Name in header immediately
+                document.getElementById('header-user-name').innerText = registeredUser.name;
+                
+                alert("Login Successful! Welcome " + registeredUser.name + ".");
+                
+                // Clear input fields
+                mobileField.value = '';
+                passField.value = '';
+
+                closeAllModals(); // Close login popup
+            } else {
+                alert("Invalid User ID or Password! Please try again or create a new account.");
+            }
+        }
+
+        // --- UI & CART FUNCTIONS ---
+        function renderMenu(itemsToRender) {
+            const grid = document.getElementById('menu-grid');
+            grid.innerHTML = ''; 
+            
+            if (itemsToRender.length === 0) {
+                grid.innerHTML = '<p style="text-align:center; grid-column: 1 / -1; color: var(--text-muted); font-size: 1.2rem;">No items found. Try searching something else!</p>';
+                return;
+            }
+
+            itemsToRender.forEach(item => {
+                grid.innerHTML += `
+                    <div class="card">
+                        <div class="shop-tag"><i class="fas fa-store"></i> ${item.shop}</div>
+                        <img src="${item.img}" alt="${item.name}">
+                        <div class="card-content">
+                            <h3 class="card-title">${item.name}</h3>
+                            <p class="card-desc">${item.desc}</p>
+                            <div class="card-footer">
+                                <span class="price">₹${item.price}</span>
+                                <button class="add-btn" onclick="addToCart(${item.id})">
+                                    <i class="fas fa-cart-plus"></i> Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function loadMenu() {
+            renderMenu(menuItems);
+        }
+
+        function searchFood() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filteredItems = menuItems.filter(item => 
+                item.name.toLowerCase().includes(query) || 
+                item.desc.toLowerCase().includes(query) ||
+                item.shop.toLowerCase().includes(query) 
+            );
+            renderMenu(filteredItems);
+        }
+
+        function startVoiceSearch() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                const recognition = new SpeechRecognition();
+                recognition.lang = 'en-IN'; 
+                
+                recognition.onstart = function() {
+                    document.getElementById('searchInput').placeholder = "Listening...";
+                };
+
+                recognition.onresult = function(event) {
+                    const transcript = event.results[0][0].transcript;
+                    document.getElementById('searchInput').value = transcript;
+                    searchFood(); 
+                };
+
+                recognition.onerror = function() {
+                    alert("Voice search error. Please check your mic permissions.");
+                    document.getElementById('searchInput').placeholder = "Search for Waffles, Pizzas, Burgers...";
+                };
+                
+                recognition.onend = function() {
+                    document.getElementById('searchInput').placeholder = "Search for Waffles, Pizzas, Burgers...";
+                }
+
+                recognition.start();
+            } else {
+                alert("Voice search is not supported in your current browser.");
+            }
+        }
+
+        function addToCart(id) {
+            const item = menuItems.find(i => i.id === id);
+            cart.push(item);
+            updateCartUI();
+            
+            const fCart = document.getElementById('floating-cart');
+            fCart.style.transform = 'scale(1.15)';
+            setTimeout(() => fCart.style.transform = 'scale(1)', 200);
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const cartContainer = document.getElementById('cart-items-container');
+            const totalDisplay = document.getElementById('cart-total-price');
+            const floatingCart = document.getElementById('floating-cart');
+            const floatingCount = document.getElementById('floating-count');
+
+            if (cart.length > 0) {
+                floatingCart.style.display = 'flex';
+                floatingCount.innerText = `(${cart.length})`;
+            } else {
+                floatingCart.style.display = 'none';
+            }
+
+            cartContainer.innerHTML = '';
+            let total = 0;
+
+            if(cart.length === 0) {
+                cartContainer.innerHTML = '<p style="text-align:center; color:#888; margin-top:20px;">Your cart is empty.</p>';
+            }
+
+            cart.forEach((item, index) => {
+                total += item.price;
+                cartContainer.innerHTML += `
+                    <div class="cart-item">
+                        <div>
+                            <div class="cart-item-title">${item.name}</div>
+                            <div class="cart-item-price">₹${item.price}</div>
+                        </div>
+                        <button class="remove-btn" onclick="removeFromCart(${index})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+            });
+
+            totalDisplay.innerText = `₹${total}`;
+        }
+
+        function closeAllModals() {
+            document.getElementById('cart-sidebar').classList.remove('open');
+            document.getElementById('login-modal').classList.remove('active');
+            document.getElementById('register-modal').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+        }
+
+        function openCartSidebar() {
+            closeAllModals();
+            document.getElementById('cart-sidebar').classList.add('open');
+            document.getElementById('overlay').classList.add('active');
+        }
+
+        function openLoginModal() {
+            closeAllModals();
+            document.getElementById('login-modal').classList.add('active');
+            document.getElementById('overlay').classList.add('active');
+        }
+
+        function openRegisterModal() {
+            closeAllModals();
+            document.getElementById('register-modal').classList.add('active');
+            document.getElementById('overlay').classList.add('active');
+        }
+
+        function placeOrder() {
+            if (!isLoggedIn) {
+                alert("Please log in first to place your order!");
+                openLoginModal();
+                return;
+            }
+            if (cart.length === 0) {
+                alert("Please add some items to your cart first!");
+                return;
+            }
+            alert(`Order Placed Successfully in Morbi!\nThank you ${registeredUser.name}!\nTotal Amount: ₹${document.getElementById('cart-total-price').innerText.replace('₹', '')}`);
+            cart = [];
+            updateCartUI();
+            closeAllModals();
+        }
+
+        // Initialize App
+        window.onload = function() {
+            loadMenu();
+            checkLoginState(); // Will keep your name visible even if you refresh!
+        };
+    </script>
+</body>
+</html>
